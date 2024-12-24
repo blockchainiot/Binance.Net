@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <PropertyGroup>
-    <PackageId>Binance.Net</PackageId>
+    <PackageId>Lgd.Binance.Net</PackageId>
     <Authors>JKorf</Authors>
     <PackageVersion>10.15.5</PackageVersion>
     <AssemblyVersion>10.15.5</AssemblyVersion>
