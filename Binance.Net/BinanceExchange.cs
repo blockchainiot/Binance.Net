@@ -38,10 +38,15 @@ namespace Binance.Net
             "https://binance-docs.github.io/apidocs/spot/en/#change-log"
             };
 
+        /// <summary>
+        /// Type of exchange
+        /// </summary>
+        public static ExchangeType Type { get; } = ExchangeType.CEX;
+
         internal const string ClientOrderIdSpot = "x-UHYRE7XF";
         internal const string ClientOrderIdFutures = "x-vctkFb17";
-        internal const string ClientOrderIdPrefixSpot = ClientOrderIdSpot + LibraryHelpers.ClientOrderIdSeperator;
-        internal const string ClientOrderIdPrefixFutures = ClientOrderIdFutures + LibraryHelpers.ClientOrderIdSeperator;
+        internal const string ClientOrderIdPrefixSpot = ClientOrderIdSpot + LibraryHelpers.ClientOrderIdSeparator;
+        internal const string ClientOrderIdPrefixFutures = ClientOrderIdFutures + LibraryHelpers.ClientOrderIdSeparator;
 
         /// <summary>
         /// Format a base and quote asset to a Binance recognized symbol 

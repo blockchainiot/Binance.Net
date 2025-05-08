@@ -80,7 +80,6 @@ namespace Binance.Net.UnitTests
             await tester.ValidateAsync(client => client.SpotApi.Account.GetTradingStatusAsync(), "GetTradingStatus", "data");
             await tester.ValidateAsync(client => client.SpotApi.Account.GetOrderRateLimitStatusAsync(), "GetOrderRateLimitStatus");
             await tester.ValidateAsync(client => client.SpotApi.Account.GetRebateHistoryAsync(), "GetRebateHistory", "data");
-            await tester.ValidateAsync(client => client.SpotApi.Account.GetLeveragedTokensUserLimitAsync(), "GetLeveragedTokensUserLimit");
             await tester.ValidateAsync(client => client.SpotApi.Account.GetPortfolioMarginAccountInfoAsync(), "GetPortfolioMarginAccountInfo");
             await tester.ValidateAsync(client => client.SpotApi.Account.GetPortfolioMarginBankruptcyLoanAsync(), "GetPortfolioMarginBankruptcyLoan");
             await tester.ValidateAsync(client => client.SpotApi.Account.PortfolioMarginBankruptcyLoanRepayAsync(), "PortfolioMarginBankruptcyLoanRepay");
@@ -123,7 +122,6 @@ namespace Binance.Net.UnitTests
             await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetMarginSymbolsAsync("ETHUSDT"), "GetMarginSymbols");
             await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetMarginPriceIndexAsync("ETHUSDT"), "GetMarginPriceIndex");
             await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetIsolatedMarginSymbolsAsync("ETHUSDT"), "GetIsolatedMarginSymbols");
-            await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetLeveragedTokenInfoAsync(), "GetLeveragedTokenInfo");
             await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetCrossMarginCollateralRatioAsync(), "GetCrossMarginCollateralRatio");
             await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetFutureHourlyInterestRateAsync(new[] { "ETHUSDT" }, false), "GetFutureHourlyInterestRate");
             await tester.ValidateAsync(client => client.SpotApi.ExchangeData.GetMarginDelistScheduleAsync(), "GetMarginDelistSchedule");
@@ -167,10 +165,6 @@ namespace Binance.Net.UnitTests
             await tester.ValidateAsync(client => client.SpotApi.Trading.GetMarginOcoOrderAsync("ETHUSDT", false, 123), "GetMarginOcoOrder");
             await tester.ValidateAsync(client => client.SpotApi.Trading.GetMarginOcoOrdersAsync("ETHUSDT", false, 123), "GetMarginOcoOrders");
             await tester.ValidateAsync(client => client.SpotApi.Trading.GetMarginOpenOcoOrdersAsync("ETHUSDT", false, 123), "GetMarginOpenOcoOrders");
-            await tester.ValidateAsync(client => client.SpotApi.Trading.SubscribeLeveragedTokenAsync("ETHUSDT", 1), "SubscribeLeveragedToken");
-            await tester.ValidateAsync(client => client.SpotApi.Trading.GetLeveragedTokensSubscriptionRecordsAsync("ETHUSDT", 1), "GetLeveragedTokensSubscriptionRecords");
-            await tester.ValidateAsync(client => client.SpotApi.Trading.RedeemLeveragedTokenAsync("ETHUSDT", 1), "RedeemLeveragedToken");
-            await tester.ValidateAsync(client => client.SpotApi.Trading.GetLeveragedTokensRedemptionRecordsAsync("ETHUSDT", 1), "GetLeveragedTokensRedemptionRecords");
             await tester.ValidateAsync(client => client.SpotApi.Trading.GetC2CTradeHistoryAsync(Enums.OrderSide.Buy), "GetC2CTradeHistory", "data");
             //await tester.ValidateAsync(client => client.SpotApi.Trading.GetPayTradeHistoryAsync(), "GetPayTradeHistory", "data", new List<string>{ "walletTypes", "walletAssetCost" });
             await tester.ValidateAsync(client => client.SpotApi.Trading.GetPayTradeHistoryAsync(), "GetPayTradeHistory2", "data", new List<string> { "walletTypes", "walletAssetCost" });
@@ -283,7 +277,7 @@ namespace Binance.Net.UnitTests
             await tester.ValidateAsync(client => client.UsdFuturesApi.Trading.GetOrderEditHistoryAsync("ETHUSDT", 123), "GetOrderEditHistory");
             await tester.ValidateAsync(client => client.UsdFuturesApi.Trading.CancelOrderAsync("ETHUSDT", 123), "CancelOrder");
             await tester.ValidateAsync(client => client.UsdFuturesApi.Trading.CancelAllOrdersAsync("ETHUSDT"), "CancelAllOrders");
-            await tester.ValidateAsync(client => client.UsdFuturesApi.Trading.EditOrderAsync("ETHUSDT", Enums.OrderSide.Buy, 1, 1, 123), "EditOrder");
+            await tester.ValidateAsync(client => client.UsdFuturesApi.Trading.EditOrderAsync("ETHUSDT", Enums.OrderSide.Buy, 1, 1, Enums.PriceMatch.None, 123), "EditOrder");
             await tester.ValidateAsync(client => client.UsdFuturesApi.Trading.EditMultipleOrdersAsync(new[] { new BinanceFuturesBatchEditOrder() }), "EditMultipleOrders", skipResponseValidation: true);
             await tester.ValidateAsync(client => client.UsdFuturesApi.Trading.CancelAllOrdersAfterTimeoutAsync("ETHUSDT", TimeSpan.Zero), "CancelAllOrdersAfterTimeout");
             await tester.ValidateAsync(client => client.UsdFuturesApi.Trading.CancelMultipleOrdersAsync("ETHUSDT", new List<long> { 123 }), "CancelMultipleOrders", skipResponseValidation: true);

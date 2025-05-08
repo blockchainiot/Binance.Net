@@ -13,15 +13,20 @@ namespace Binance.Net.Enums
         [Map("EXPIRE_TAKER")]
         ExpireTaker,
         /// <summary>
-        /// Exire maker
+        /// Expire maker
         /// </summary>
         [Map("EXPIRE_MAKER")]
         ExpireMaker,
         /// <summary>
-        /// Exire both
+        /// Expire both
         /// </summary>
         [Map("EXPIRE_BOTH")]
         ExpireBoth,
+        /// <summary>
+        /// Decrement
+        /// </summary>
+        [Map("DECREMENT")]
+        Decrement,
         /// <summary>
         /// None
         /// </summary>

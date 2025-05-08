@@ -1,15 +1,12 @@
-﻿using Binance.Net.Converters;
-using Binance.Net.Enums;
+﻿using Binance.Net.Enums;
 using Binance.Net.Interfaces.Clients.SpotApi;
 using Binance.Net.Objects.Models;
 using Binance.Net.Objects.Models.Futures.AlgoOrders;
 using Binance.Net.Objects.Models.Spot;
 using Binance.Net.Objects.Models.Spot.Blvt;
 using Binance.Net.Objects.Models.Spot.Convert;
-using Binance.Net.Objects.Models.Spot.ConvertTransfer;
 using Binance.Net.Objects.Models.Spot.Margin;
 using CryptoExchange.Net.CommonObjects;
-using System;
 
 namespace Binance.Net.Clients.SpotApi
 {
@@ -116,7 +113,8 @@ namespace Binance.Net.Clients.SpotApi
             int? receiveWindow = null,
             CancellationToken ct = default)
         {
-            var result = await _baseClient.PlaceOrderInternal(_baseClient.GetUrl("order", "api", "3"),
+            var result = await _baseClient.PlaceOrderInternal("/api/v3/order",
+                BinanceExchange.RateLimiter.SpotRestUid,
                 symbol,
                 side,
                 type,
@@ -137,7 +135,6 @@ namespace Binance.Net.Clients.SpotApi
                 null,
                 receiveWindow,
                 1,
-                BinanceExchange.RateLimiter.SpotRestUid,
                 ct).ConfigureAwait(false);
             if (result)
                 _baseClient.InvokeOrderPlaced(new OrderId() { SourceObject = result.Data, Id = result.Data.Id.ToString(CultureInfo.InvariantCulture) });
@@ -416,6 +413,7 @@ namespace Binance.Net.Clients.SpotApi
             decimal quantity,
             SpotOrderType aboveOrderType,
             SpotOrderType belowOrderType,
+            string? listClientOrderId = null,
 
             string? aboveClientOrderId = null,
             decimal? aboveIcebergQuantity = null,
@@ -451,6 +449,7 @@ namespace Binance.Net.Clients.SpotApi
             };
             parameters.AddEnum("side", side);
 
+            parameters.AddOptional("listClientOrderId", listClientOrderId);
             parameters.AddOptional("aboveClientOrderId", aboveClientOrderId);
             parameters.AddOptional("aboveIcebergQty", aboveIcebergQuantity);
             parameters.AddOptional("abovePrice", abovePrice);
@@ -774,7 +773,8 @@ namespace Binance.Net.Clients.SpotApi
             int? receiveWindow = null,
             CancellationToken ct = default)
         {
-            var result = await _baseClient.PlaceOrderInternal(_baseClient.GetUrl("margin/order", "sapi", "1"),
+            var result = await _baseClient.PlaceOrderInternal("/sapi/v1/margin/order",
+                BinanceExchange.RateLimiter.SpotRestUid,
                 symbol,
                 side,
                 type,
@@ -795,7 +795,6 @@ namespace Binance.Net.Clients.SpotApi
                 autoRepayAtCancel,
                 receiveWindow,
                 weight: 6,
-                BinanceExchange.RateLimiter.SpotRestUid,
                 ct).ConfigureAwait(false);
 
             if (result)
@@ -927,7 +926,8 @@ namespace Binance.Net.Clients.SpotApi
         #region Query Margin Account's Trade List
 
         /// <inheritdoc />
-        public async Task<WebCallResult<IEnumerable<BinanceTrade>>> GetMarginUserTradesAsync(string symbol, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, long? fromId = null, bool? isIsolated = null, long? receiveWindow = null, CancellationToken ct = default)
+        public async Task<WebCallResult<IEnumerable<BinanceTrade>>> GetMarginUserTradesAsync(string symbol, long? orderId = null, DateTime? startTime = null, DateTime? endTime = null,
+            int? limit = null, long? fromId = null, bool? isIsolated = null, long? receiveWindow = null, CancellationToken ct = default)
         {
             limit?.ValidateIntBetween(nameof(limit), 1, 1000);
 
@@ -935,6 +935,7 @@ namespace Binance.Net.Clients.SpotApi
             {
                 { "symbol", symbol }
             };
+            parameters.AddOptionalParameter("orderId", orderId);
             parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
             parameters.AddOptionalParameter("isIsolated", isIsolated);
             parameters.AddOptionalParameter("fromId", fromId?.ToString(CultureInfo.InvariantCulture));
@@ -1105,88 +1106,6 @@ namespace Binance.Net.Clients.SpotApi
             var request = _definitions.GetOrCreate(HttpMethod.Get, "sapi/v1/margin/openOrderList", BinanceExchange.RateLimiter.SpotRestIp, 10, true);
             return await _baseClient.SendAsync<IEnumerable<BinanceMarginOrderOcoList>>(request, parameters, ct).ConfigureAwait(false);
         }
-
-        #endregion
-
-        #region Leveraged tokens
-
-        #region Leveraged tokens subscribe
-
-        /// <inheritdoc />
-        public async Task<WebCallResult<BinanceBlvtSubscribeResult>> SubscribeLeveragedTokenAsync(string tokenName, decimal cost, int? receiveWindow = null, CancellationToken ct = default)
-        {
-            var parameters = new ParameterCollection
-            {
-                { "tokenName", tokenName },
-                { "cost", cost.ToString(CultureInfo.InvariantCulture) }
-            };
-            parameters.AddOptionalParameter("recvWindow", receiveWindow?.ToString(CultureInfo.InvariantCulture) ?? _baseClient.ClientOptions.ReceiveWindow.TotalMilliseconds.ToString(CultureInfo.InvariantCulture));
-
-            var request = _definitions.GetOrCreate(HttpMethod.Post, "sapi/v1/blvt/subscribe", BinanceExchange.RateLimiter.SpotRestIp, 1, true);
-            return await _baseClient.SendAsync<BinanceBlvtSubscribeResult>(request, parameters, ct).ConfigureAwait(false);
-        }
-
-        #endregion
-
-        #region Get Leveraged tokens subscription records
-
-        /// <inheritdoc />
-        public async Task<WebCallResult<IEnumerable<BinanceBlvtSubscription>>> GetLeveragedTokensSubscriptionRecordsAsync(string? tokenName = null, long? id = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, int? receiveWindow = null, CancellationToken ct = default)
-        {
-            limit?.ValidateIntBetween(nameof(limit), 1, 1000);
-
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("tokenName", tokenName);
-            parameters.AddOptionalParameter("id", id?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("startTime", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("endTime", DateTimeConverter.ConvertToMilliseconds(endTime));
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("recvWindow", receiveWindow?.ToString(CultureInfo.InvariantCulture) ?? _baseClient.ClientOptions.ReceiveWindow.TotalMilliseconds.ToString(CultureInfo.InvariantCulture));
-
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "sapi/v1/blvt/subscribe/record", BinanceExchange.RateLimiter.SpotRestIp, 1, true);
-            return await _baseClient.SendAsync<IEnumerable<BinanceBlvtSubscription>>(request, parameters, ct).ConfigureAwait(false);
-        }
-
-        #endregion
-
-        #region Leveraged tokens Redeem 
-
-        /// <inheritdoc />
-        public async Task<WebCallResult<BinanceBlvtRedeemResult>> RedeemLeveragedTokenAsync(string tokenName, decimal quantity, int? receiveWindow = null, CancellationToken ct = default)
-        {
-            var parameters = new ParameterCollection
-            {
-                { "tokenName", tokenName },
-                { "amount", quantity.ToString(CultureInfo.InvariantCulture) }
-            };
-            parameters.AddOptionalParameter("recvWindow", receiveWindow?.ToString(CultureInfo.InvariantCulture) ?? _baseClient.ClientOptions.ReceiveWindow.TotalMilliseconds.ToString(CultureInfo.InvariantCulture));
-
-            var request = _definitions.GetOrCreate(HttpMethod.Post, "sapi/v1/blvt/redeem", BinanceExchange.RateLimiter.SpotRestIp, 1, true);
-            return await _baseClient.SendAsync<BinanceBlvtRedeemResult > (request, parameters, ct).ConfigureAwait(false);
-        }
-
-        #endregion
-
-        #region Get Leveraged tokens redemption records
-
-        /// <inheritdoc />
-        public async Task<WebCallResult<IEnumerable<BinanceBlvtRedemption>>> GetLeveragedTokensRedemptionRecordsAsync(string? tokenName = null, long? id = null, DateTime? startTime = null, DateTime? endTime = null, int? limit = null, int? receiveWindow = null, CancellationToken ct = default)
-        {
-            limit?.ValidateIntBetween(nameof(limit), 1, 1000);
-
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalParameter("tokenName", tokenName);
-            parameters.AddOptionalParameter("id", id?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("startTime", DateTimeConverter.ConvertToMilliseconds(startTime));
-            parameters.AddOptionalParameter("endTime", DateTimeConverter.ConvertToMilliseconds(endTime));
-            parameters.AddOptionalParameter("limit", limit?.ToString(CultureInfo.InvariantCulture));
-            parameters.AddOptionalParameter("recvWindow", receiveWindow?.ToString(CultureInfo.InvariantCulture) ?? _baseClient.ClientOptions.ReceiveWindow.TotalMilliseconds.ToString(CultureInfo.InvariantCulture));
-
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "sapi/v1/blvt/redeem/record", BinanceExchange.RateLimiter.SpotRestIp, 1, true);
-            return await _baseClient.SendAsync<IEnumerable<BinanceBlvtRedemption>>(request, parameters, ct).ConfigureAwait(false);
-        }
-
-        #endregion
 
         #endregion
 

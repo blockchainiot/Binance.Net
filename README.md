@@ -80,12 +80,15 @@ CryptoExchange.Net also allows for [easy access to different exchange API's](htt
 |Bitfinex|[JKorf/Bitfinex.Net](https://github.com/JKorf/Bitfinex.Net)|[![Nuget version](https://img.shields.io/nuget/v/Bitfinex.net.svg?style=flat-square)](https://www.nuget.org/packages/Bitfinex.Net)|
 |Bitget|[JKorf/Bitget.Net](https://github.com/JKorf/Bitget.Net)|[![Nuget version](https://img.shields.io/nuget/v/JK.Bitget.net.svg?style=flat-square)](https://www.nuget.org/packages/JK.Bitget.Net)|
 |BitMart|[JKorf/BitMart.Net](https://github.com/JKorf/BitMart.Net)|[![Nuget version](https://img.shields.io/nuget/v/BitMart.net.svg?style=flat-square)](https://www.nuget.org/packages/BitMart.Net)|
+|BitMEX|[JKorf/BitMEX.Net](https://github.com/JKorf/BitMEX.Net)|[![Nuget version](https://img.shields.io/nuget/v/JKorf.BitMEX.net.svg?style=flat-square)](https://www.nuget.org/packages/JKorf.BitMEX.Net)|
 |Bybit|[JKorf/Bybit.Net](https://github.com/JKorf/Bybit.Net)|[![Nuget version](https://img.shields.io/nuget/v/Bybit.net.svg?style=flat-square)](https://www.nuget.org/packages/Bybit.Net)|
 |Coinbase|[JKorf/Coinbase.Net](https://github.com/JKorf/Coinbase.Net)|[![Nuget version](https://img.shields.io/nuget/v/JKorf.Coinbase.Net.svg?style=flat-square)](https://www.nuget.org/packages/JKorf.Coinbase.Net)|
 |CoinEx|[JKorf/CoinEx.Net](https://github.com/JKorf/CoinEx.Net)|[![Nuget version](https://img.shields.io/nuget/v/CoinEx.net.svg?style=flat-square)](https://www.nuget.org/packages/CoinEx.Net)|
 |CoinGecko|[JKorf/CoinGecko.Net](https://github.com/JKorf/CoinGecko.Net)|[![Nuget version](https://img.shields.io/nuget/v/CoinGecko.net.svg?style=flat-square)](https://www.nuget.org/packages/CoinGecko.Net)|
 |Crypto.com|[JKorf/CryptoCom.Net](https://github.com/JKorf/CryptoCom.Net)|[![Nuget version](https://img.shields.io/nuget/v/CryptoCom.net.svg?style=flat-square)](https://www.nuget.org/packages/CryptoCom.Net)|
+|DeepCoin|[JKorf/DeepCoin.Net](https://github.com/JKorf/DeepCoin.Net)|[![Nuget version](https://img.shields.io/nuget/v/DeepCoin.net.svg?style=flat-square)](https://www.nuget.org/packages/DeepCoin.Net)|
 |Gate.io|[JKorf/GateIo.Net](https://github.com/JKorf/GateIo.Net)|[![Nuget version](https://img.shields.io/nuget/v/GateIo.net.svg?style=flat-square)](https://www.nuget.org/packages/GateIo.Net)|
+|HyperLiquid|[JKorf/HyperLiquid.Net](https://github.com/JKorf/HyperLiquid.Net)|[![Nuget version](https://img.shields.io/nuget/v/HyperLiquid.Net.svg?style=flat-square)](https://www.nuget.org/packages/HyperLiquid.Net)|
 |HTX|[JKorf/HTX.Net](https://github.com/JKorf/HTX.Net)|[![Nuget version](https://img.shields.io/nuget/v/JKorf.HTX.Net.svg?style=flat-square)](https://www.nuget.org/packages/JKorf.HTX.Net)|
 |Kraken|[JKorf/Kraken.Net](https://github.com/JKorf/Kraken.Net)|[![Nuget version](https://img.shields.io/nuget/v/KrakenExchange.net.svg?style=flat-square)](https://www.nuget.org/packages/KrakenExchange.Net)|
 |Kucoin|[JKorf/Kucoin.Net](https://github.com/JKorf/Kucoin.Net)|[![Nuget version](https://img.shields.io/nuget/v/Kucoin.net.svg?style=flat-square)](https://www.nuget.org/packages/Kucoin.Net)|
@@ -188,6 +191,52 @@ Make a one time donation in a crypto currency of your choice. If you prefer to d
 Alternatively, sponsor me on Github using [Github Sponsors](https://github.com/sponsors/JKorf). 
 
 ## Release notes
+* Version 10.20.0 - 07 May 2025
+    * Added NFT Endpoints
+    * Added missing margin market data endpoints
+    * Added SelfTradePreventionMode missing enum value
+    * Removed ceased BVLT endpoints
+    * Fix Coin-M stream path
+
+* Version 10.19.1 - 15 Apr 2025
+    * Added listClientOrderId to restClient.SpotApi.Trading.PlaceOcoOrderListAsync endpoint
+    * Fixed warning for unknown symbol filter type
+
+* Version 10.19.0 - 26 Mar 2025
+    * Added quoteAsset parameter to restClient.SpotApi.Account.GetWalletBalancesAsync endpoint
+    * Added Denomination property to restClient.SpotApi.Account.GetUserAssetsAsync response model
+    * Updated SimpleEarn locked response models
+    * Updated request weight of restClient.SpotApi.ExchangeData.GetAggregatedTradeHistoryAsync to 4
+
+* Version 10.18.0 - 25 Feb 2025
+    * Added Coin-M websocket Trade API implementation
+    * Added SOL staking endpoints to restClient.GeneralApi.Staking
+    * Added orderId parameter to Spot.GetMarginUserTradesAsync
+    * Updated futures GetTradeHistoryAsync max limit value from 1000 to 500
+    * Fixed API doc references for endpoints and subscriptions
+    * Fixed various spelling mistakes
+
+* Version 10.17.0 - 11 Feb 2025
+    * Updated CryptoExchange.Net to version 8.8.0, see https://github.com/JKorf/CryptoExchange.Net/releases/
+    * Added support for more SharedKlineInterval values
+    * Added setting of DataTime value on websocket DataEvent updates
+    * Added contract address and URL properties to BinanceUserAsset model
+    * Fix Mono runtime exception on rest client construction using DI
+
+* Version 10.16.2 - 22 Jan 2025
+    * Updated RewardType Enum values
+    * Updated weight of restClient.SpotApi.Account.WithdrawAsync from 600 to 900
+    * Fixed restClient.SpotApi.Account.GetTradeFeeAsync for Us environment
+
+* Version 10.16.1 - 07 Jan 2025
+    * Updated CryptoExchange.Net version
+    * Added Type property to BinanceExchange class
+
+* Version 10.16.0 - 03 Jan 2025
+    * Added PriceMatch parameter to UsdFutures order editing
+    * Added support for premium index klines in socketClient.UsdFuturesApi.ExchangeData.SubscribeToKlineUpdatesAsync
+    * Updated ETH history response models
+
 * Version 10.15.0 - 23 Dec 2024
     * Updated CryptoExchange.Net to version 8.5.0, see https://github.com/JKorf/CryptoExchange.Net/releases/
     * Added SetOptions methods on Rest and Socket clients

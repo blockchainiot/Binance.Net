@@ -9,7 +9,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
-using System;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -115,8 +114,8 @@ namespace Microsoft.Extensions.DependencyInjection
                     handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
                     handler.DefaultProxyCredentials = CredentialCache.DefaultCredentials;
                 }
-                catch (PlatformNotSupportedException)
-                { }
+                catch (PlatformNotSupportedException) { }
+                catch (NotImplementedException) { } // Mono runtime throws NotImplementedException for DefaultProxyCredentials setting
 
                 var options = serviceProvider.GetRequiredService<IOptions<BinanceRestOptions>>().Value;
                 if (options.Proxy != null)
